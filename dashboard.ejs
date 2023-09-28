@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Events Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://img.freepik.com/premium-photo/beige-dirty-empty-old-paper-background-paper-texture_255485-443.jpg');
+        }
+
+        header {
+            background-color:burlywood;
+            color: black;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        #search-input {
+            padding: 10px;
+            width: 60%;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        #search-button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #search-button:hover {
+            background-color: #555;
+        }
+
+        .results-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        .historical-event {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .no-results-message {
+            color: #555;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Historical Events Dashboard</h1>
+    </header>
+    <main>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Enter a keyword or date (e.g., 1776)">
+            <button id="search-button">Search</button>
+        </div>
+        <div class="results-container" id="results-container">
+        </div>
+    </main>
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const resultsContainer = document.getElementById('results-container');
+
+        searchButton.addEventListener('click', function () {
+            const text = searchInput.value.trim();
+            searchHistoricalEvents(text);
+        });
+
+        function searchHistoricalEvents(text) {
+            const apiKey = '91EqrT311o0PjVA2V4Z+Bw==p6ugWolLkzSr2h9q';
+            const apiUrl = `https://api.api-ninjas.com/v1/historicalevents?text=${text}`;
+
+            fetch(apiUrl, {
+                method: 'GET',
+                headers: { 'X-Api-Key': apiKey },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    resultsContainer.innerHTML = '';
+
+                    if (data && data.length > 0) {
+                        data.forEach(event => {
+                            const eventDiv = document.createElement('div');
+                            eventDiv.classList.add('historical-event');
+                            eventDiv.innerHTML = `
+                                <h2>${event.year}/${event.month}/${event.day}</h2>
+                                <p>${event.event}</p>
+                            `;
+                            resultsContainer.appendChild(eventDiv);
+                        });
+                    } else {
+                        const noResultsParagraph = document.createElement('p');
+                        noResultsParagraph.textContent = 'No historical events found.';
+                        noResultsParagraph.classList.add('no-results-message'); 
+                        resultsContainer.appendChild(noResultsParagraph);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+    </script>
+</body>
+</html>
